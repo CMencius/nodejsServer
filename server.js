@@ -18,7 +18,9 @@ var getTime = function(){
 
 io.on("connect", function (socket) {
     console.log("链接成功");
-
+    console.log(socket);
+    console.log("这是io的连接log");
+    console.log(io);
     socket.emit("connected",'我从服务端过来的');
     socket.on("login",function(msg){
                 var Data = JSON.parse(msg);
