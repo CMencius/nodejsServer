@@ -14,19 +14,21 @@ var getTime = function(){
                 M = "0" + M;
         }
         return H + ":" + M;
+}
 
-var myRoom = ["myRoom01","myRoom02"];
-var roomName;
+//var myRoom = ["myRoom01","myRoom02"];
+
 io.on("connect", function (socket) {
     console.log("链接成功" + socket.id);
+    var roomName = "myRoom";
     count++;
-    roomName = myRoom[count/2];
+    roomName = roomName + Math.floor(count/2);
     socket.join(roomName);
     // console.log(socket);
-    console.log("这是io的连接log");
+    // console.log("这是io的连接log");
     // console.log(io);
     
-    socket.emit("connected",'我从服务端过来的加入了房间' + roomName);
+    socket.emit("connected",'加入了房间' + roomName);
     socket.on("login",function(msg){
                 var Data = JSON.parse(msg);
                 var tipString = getTime() + "用户:" + Data.name + "登录";
@@ -35,8 +37,9 @@ io.on("connect", function (socket) {
         io.emit("refresh", tipString);
     });
     socket.on("guangbo",function(msg){
+        
+        io.sockets.in(roomName).emit("shouting",msg + roomName + icount);
         console.log(msg);
-        io.sockets.in()("shouting",chatstring);
     });
     socket.on("chat",function(msg){
         var data = JSON.parse(msg);
@@ -44,7 +47,18 @@ io.on("connect", function (socket) {
         console.log(chatstring);
         io.emit("addmsg",chatstring);
     });
+
+    socket.on("reconnect",function(){
+        cc.log("断线重连" + socket.id);
+    });
+
+    socket.on("disconnect",function(){
+        console.log("断开连接" + socket.id);
+    });
+
+
 });
+
 
 http.listen(3000, function(){
     console.log("listening on : 3000");
