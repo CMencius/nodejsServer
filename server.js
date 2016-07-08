@@ -37,9 +37,13 @@ io.on("connect", function (socket) {
         io.emit("refresh", tipString);
     });
     socket.on("guangbo",function(msg){
-        
-        io.sockets.in(roomName).emit("shouting",msg + roomName + icount);
-        console.log(msg);
+        //io.sockets.emit("msgforeveryone","hello,everyone"); //向全体广播
+        //socket.broadcast.emit("msgforeveryone","hello,everyone"); //向除了自己以为的连接广播
+        //io.sockets.in('myRoom1').emit("msgforeveryone","hello,everyone");//像房间****发送信息
+        //io.sockets.socket(socketid).emit('msgforeveryone', "hello,everyone");//给指定的客户端发送消息
+        //socket.broadcast.to('myRoom1').emit('msgforeveryone', "hello,everyone");//给房间1发送除了自己
+        //io.sockets.in(roomName).emit("shouting",msg + roomName + icount);
+        console.log("myRoom1");
     });
     socket.on("chat",function(msg){
         var data = JSON.parse(msg);
@@ -54,6 +58,7 @@ io.on("connect", function (socket) {
 
     socket.on("disconnect",function(){
         console.log("断开连接" + socket.id);
+        count--;
     });
 
 
