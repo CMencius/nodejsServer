@@ -45,6 +45,9 @@ io.on("connect", function (socket) {
         //io.sockets.in(roomName).emit("shouting",msg + roomName + icount);
         console.log("myRoom1");
     });
+    socket.on("mypos", function(msg){
+        socket.broadcast.to('myRoom1').emit('refpos', msg);
+    });
     socket.on("chat",function(msg){
         var data = JSON.parse(msg);
         var chatstring = data.name + " " + getTime() + ":" +  data.chatContent;
