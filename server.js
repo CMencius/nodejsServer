@@ -19,10 +19,20 @@ var getTime = function(){
 //var myRoom = ["myRoom01","myRoom02"];
 
 io.on("connect", function (socket) {
-    console.log("链接成功" + socket.id);
+    console.log("链接成功" +":"+ count);
+    //////游戏正式内容，先不考虑房间//////
+    socket.emit("login",count + "");
+    //把自己的状态广播给除了自己的所有人
+    socket.on("changeState",function(msg){
+        console.log(msg);
+        socket.broadcast.emit("msgforeveryone",msg); 
+    });
+    
+    ////////////////////////////////
+    
     var roomName = "myRoom";
     count++;
-    roomName = roomName + Math.floor(count/2);
+    roomName = roomName + Math.floor(count/4);
     socket.join(roomName);
     // console.log(socket);
     // console.log("这是io的连接log");
@@ -36,6 +46,21 @@ io.on("connect", function (socket) {
 
         io.emit("refresh", tipString);
     });
+    socket.on("zhunbei",function(msg){
+        socket.zhunbei = msg;
+        //console.log(socket.zhunbei,msg);
+        
+        //console.log(typeof socket.rooms);
+        // console.log(io.sockets);
+        //获得myRoom1房间里的id
+        var roomsocket = io.sockets.adapter.rooms['myRoom1'];
+        for(key in roomsocket.sockets){
+            // console.log(roomsocket.sockets);
+            
+            console.log(socket.nsp.sockets[key]);
+            // console.log(io.sockets.adapter.sids[key]);
+        }
+    });
     socket.on("guangbo",function(msg){
         //io.sockets.emit("msgforeveryone","hello,everyone"); //向全体广播
         //socket.broadcast.emit("msgforeveryone","hello,everyone"); //向除了自己以为的连接广播
@@ -43,6 +68,7 @@ io.on("connect", function (socket) {
         //io.sockets.socket(socketid).emit('msgforeveryone', "hello,everyone");//给指定的客户端发送消息
         //socket.broadcast.to('myRoom1').emit('msgforeveryone', "hello,everyone");//给房间1发送除了自己
         //io.sockets.in(roomName).emit("shouting",msg + roomName + icount);
+        //socket.nsp.sockets[socket.io].emit("msgforeveryone","room1");//根据sockeio来获取socket实例可以直接发送
         console.log("myRoom1");
     });
     socket.on("mypos", function(msg){
