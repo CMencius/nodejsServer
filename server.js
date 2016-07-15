@@ -59,7 +59,7 @@ io.on("connect", function (socket) {
         console.log(roomId);
     };
     socket.on("rbGuangbo",function(msg){
-        io.sockets.in(socket.myRoomId).emit("rbJieshou",msg);
+        socket.broadcast.to(socket.myRoomId).emit("rbJieshou",msg);
     });
     ////////////////////////////////////////////////////
     var roomName = "myRoom";
