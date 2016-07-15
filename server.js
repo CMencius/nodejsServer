@@ -15,7 +15,20 @@ var getTime = function(){
         }
         return H + ":" + M;
 }
+//RB
+var players = ["blue","red"];
+var rbCountRoom = 1;
+var rbCountPlayer = 0;
 
+
+/////////////////////////
+var copyPlayers = function(){
+    var newArr = new Array();
+    for(var i = 0 ;  i < players.length ; i++){
+        newArr[i] = players[i];
+    }
+    return newArr;
+};
 //var myRoom = ["myRoom01","myRoom02"];
 
 io.on("connect", function (socket) {
@@ -30,6 +43,25 @@ io.on("connect", function (socket) {
     
     ////////////////////////////////
     
+    //////////////RedBlue///////////
+    var myPlayerArr = copyPlayers();
+    var roomId = "Room" + rbCountRoom;
+    joinRoom(roomId);
+    function joinRoom(roomId) {
+        socket.join(roomId);
+        socket.myRoomId = roomId;
+        socket.emit("brLogin",players[rbCountPlayer]);
+        rbCountPlayer++;
+        if(rbCountPlayer > 1){
+            rbCountPlayer = 0;
+            rbCountRoom++;
+        }
+        console.log(roomId);
+    };
+    socket.on("rbGuangbo",function(msg){
+        io.sockets.in(socket.myRoomId).emit("rbJieshou",msg);
+    });
+    ////////////////////////////////////////////////////
     var roomName = "myRoom";
     count++;
     roomName = roomName + Math.floor(count/4);
